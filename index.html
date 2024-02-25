@@ -13,37 +13,108 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <!-- Feather Icons -->
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css">
 
+    <!-- Alpine js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    <!-- App -->
+    <script src="src/app.js" async></script>
+    <!-- ditambahakn async agar javascript di load setelah element masuk kedalam DOM -->
+
+    <!-- Animate CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
 <body>
     <!-- Navbar Start -->
-    <nav class="navbar">
+    <nav class="navbar animate__animated animate__fadeInDown animate__slow" x-data>
         <a href="#" class="navbar-logo">Hrya<span>Store.</span></a>
         <div class="navbar-nav">
             <a href="#home">Home</a>
-            <a href="#about">About Me</a>
+            <a href="#about">About</a>
             <a href="#product">Product</a>
             <a href="#contact">Contact</a>
         </div>
         <div class="navbar-extra">
             <a href="#" id="search"><i data-feather="search"></i></a>
-            <a href="#" id="shopping-cart"><i data-feather="shopping-cart"></i></a>
+            <a href="#" id="shopping-cart"><i data-feather="shopping-cart"></i><span x-show="$store.cart.quantity"
+                    x-text="$store.cart.quantity"></span></a>
             <a href="#" id="menu"><i data-feather="menu"></i></a>
         </div>
+
+        <!-- Search for Start -->
+        <div class="search-form">
+            <input type="search" id="search-box" placeholder="Cari sesuatu...">
+            <label for="search-box"><i data-feather="search"></i></label>
+        </div>
+        <!-- Search for End -->
+
+
+        <!-- Shopping cart start -->
+        <div class="shopping-cart" x-data>
+            <template x-for="(item, index) in $store.cart.items" x-key="index">
+                <div class="cart-item">
+                    <img :src="`img/products/${item.img}`">
+                    <div class="item-detail">
+                        <h3 x-text="item.name"></h3>
+                        <div class="rupiah(item-price)">
+                            <span x-text="item.price"></span> &times;
+                            <button id="remove" @click.prevent="$store.cart.remove(item.id)"">&minus;</button>
+                            <span x-text=" item.quantity"></span>
+                                <button id="add" @click.prevent="$store.cart.add(item)">&plus;</button> &equals;
+                                <span x-text="rupiah(item.total)"></span>
+                        </div>
+                    </div>
+            </template>
+            <div>
+                <h4 class="total-price" x-show="!$store.cart.total" style="margin-top: 1rem;">Cart is Empty</h4>
+                <h4 class="total-price" x-show="$store.cart.total" x-text="`Total Harga: ${rupiah($store.cart.total)}`">
+                </h4>
+            </div>
+            <div class="form-container" x-show="$store.cart.total">
+                <form action="" id="checkout-form">
+                    <input type="hidden" name="items" x-model="JSON.stringify($store.cart.items)">
+                    <input type="hidden" name="total" x-model="$store.cart.total">
+                    <h4>Customer Detail</h4>
+                    <label for="name">
+                        <span>Name</span>
+                        <input type="text" name="name" id="name">
+                    </label>
+                    <label for="email">
+                        <span>Email</span>
+                        <input type="email" name="email" id="email">
+                    </label>
+                    <label for="phone">
+                        <span>Phone</span>
+                        <input type="number" name="phone" id="phone">
+                    </label>
+                    <label for="addres">
+                        <span>Address</span>
+                        <input type="text" name="address" id="address">
+                    </label>
+                    <button class="checkout-button disable" type="submit" value="checkout">Checkout</button>
+                </form>
+            </div>
+        </div>
+        <!-- Shopping cart end -->
+
+
     </nav>
     <!-- Navbar End -->
 
     <!-- Hero Section Start -->
     <section class="hero" id="home">
-        <main class="content">
-            <h1>Selamat Datang di <span>Hrya<span>Store.</span></span></h1>
+        <div class="content animate__animated animate__fadeInLeft animate__slow">
+            <h1>Welcome to <span>Hrya<span>Store.</span></span></h1>
             <P>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolor accusamus sint praesentium quo sequi
                 ipsam.</P>
             <a href="#product">Beli Sekarang!!!</a>
-        </main>
+        </div>
+        <div class="image animate__animated animate__fadeInBottomRight animate__slow">
+            <div class="circle"></div>
+            <img src="img/model.png">
+        </div>
     </section>
     <!-- Hero Section End -->
 
@@ -52,65 +123,69 @@
         <h2>Tentang <span>Kami</span></h2>
         <div class="row">
             <div class="about-img">
-                <img src="img/mylogo.jpg" alt="Tentang Kami">
+                <button class="prev" onclick="prevImage()"><</button>
+                <img src="img/about/aboutImage1.jpg" alt="aboutImage1">
+                <img src="img/about/aboutImage2.jpg" alt="aboutImage2">
+                <img src="img/about/aboutImage3.jpg" alt="aboutImage3">
+                <button class="next" onclick="nextImage()">></button>
+
             </div>
             <div class="about-content">
-                <h3>Alasan memilih belanja di HryaStore.</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis itaque aut quo cumque voluptatum
-                    neque!</p>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fuga qui aliquam ab incidunt deleniti
-                    perferendis! Enim, asperiores? Enim, corporis accusamus.</p>
+                <h4>Mengapa toko kami?</h4>
+                <div class="about-card">
+                    <i data-feather="package"></i>
+                    <h4>Lorem, ipsum.</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit cumque sint ad obcaecati odit
+                        modi consequatur, quod ipsam enim distinctio.</p>
+                </div>
+                <div class="about-card">
+                    <i data-feather="pocket"></i>
+                    <h4>Lorem, ipsum.</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit cumque sint ad obcaecati odit
+                        modi consequatur, quod ipsam enim distinctio.</p>
+                </div>
+                <div class="about-card">
+                    <i data-feather="truck"></i>
+                    <h4>Lorem, ipsum.</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit cumque sint ad obcaecati odit
+                        modi consequatur, quod ipsam enim distinctio.</p>
+                </div>
+                <div class="about-card">
+                    <i data-feather="map"></i>
+                    <h4>Lorem, ipsum.</h4>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit cumque sint ad obcaecati odit
+                        modi consequatur, quod ipsam enim distinctio.</p>
+                </div>
             </div>
         </div>
     </section>
-    <!-- About Section Start -->
+    <!-- About Section End -->
 
     <!-- Product Section Start -->
-    <section class="product" id="product">
+    <section class="product" id="product" x-data="products">
         <h2>Produk <span>Kami</span></h2>
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eveniet reprehenderit molestias impedit ea.
             Voluptatum eos magni, quisquam earum magnam amet?</p>
         <div class="row">
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
-            <div class="menu-card">
-                <img src="img/1.jpg" class="menu-card-img" height="200px" width="200px">
-                <h3 class="menu-card-tittle">- Produk Kami -</h3>
-                <p class="menu-card-price">IDR 15K</p>
-            </div>
+            <template x-for="(item, index) in items" x-key="index">
+                <div class="product-card">
+                    <div class="product-card-icon">
+                        <a href="#" class="shopping-cart-product" @click.prevent="$store.cart.add(item)"><svg width="24"
+                                height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <use href="img/feather-sprite.svg#shopping-cart" />
+                            </svg></a>
+                        <a href="#" id="eye-icon"><svg width="24" height="24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <use href="img/feather-sprite.svg#eye" />
+                            </svg></a>
+                    </div>
+                    <img :src="`img/products/${item.img}`" class="menu-card-img" height="200px" width="200px"
+                        :alt="item.name">
+                    <h3 class="product-card-tittle" x-text="item.name"></h3>
+                    <p class="product-card-price" x-text="rupiah(item.price)"></p>
+                </div>
+            </template>
         </div>
     </section>
     <!-- Product Section End -->
@@ -123,20 +198,20 @@
             <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63245.97085555962!2d110.33364497563633!3d-7.803248457444105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5787bd5b6bc5%3A0x21723fd4d3684f71!2sYogyakarta%2C%20Kota%20Yogyakarta%2C%20Daerah%20Istimewa%20Yogyakarta!5e0!3m2!1sid!2sid!4v1693493874628!5m2!1sid!2sid"
                 allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map"></iframe>
-            <form>
+            <form class="form-message">
                 <div class="input-group">
                     <i data-feather="user"></i>
-                    <input type="text" placeholder="nama">
+                    <input type="text" id="user-input" placeholder="name">
                 </div>
                 <div class="input-group">
                     <i data-feather="mail"></i>
-                    <input type="email" placeholder="email">
+                    <input type="email" id="mail-input" placeholder="email">
                 </div>
                 <div class="input-group">
-                    <i data-feather="phone"></i>
-                    <input type="text" placeholder="phone">
+                    <i data-feather="message-square"></i>
+                    <input type="text" id="message-input" placeholder="message">
                 </div>
-                <button type="submit" class="btn">Submit</button>
+                <button type="submit" class="btn-submit" value="submit">Submit</button>
             </form>
         </div>
     </section>
@@ -145,30 +220,46 @@
     <!-- Footer Section Start -->
     <footer>
         <div class="social">
-            <a href="#"><i data-feather="instagram"></i></a>
+            <a href="https://www.instagram.com/rzalhrya_"><i data-feather="instagram"></i></a>
             <a href="#"><i data-feather="twitter"></i></a>
             <a href="#"><i data-feather="facebook"></i></a>
         </div>
 
         <div class="links">
             <a href="#home">Home</a>
-            <a href="#about">About Me</a>
+            <a href="#about">About</a>
             <a href="#product">Product</a>
             <a href="#contact">Contact</a>
         </div>
 
         <div class="credit">
-            <p>Creadet by <a>Rizal Haryaputra</a> | &copy; 2023</p>
+            <p>Created by <a>Rizal Haryaputra</a> | &copy; 2023</p>
         </div>
 
     </footer>
-
-
-
-
     <!-- Footer Section End -->
 
+    <!-- Modal box item detail start -->
+    <div class="modal" id="item-detail-modal">
+        <div class="modal-container">
+            <a href="#" class="close-icon"><i data-feather="x"></i></a>
+            <div class="modal-content">
+                <img src="img/products/1.jpg" class="modal-image">
+                <div class="product-content">
+                    <h3 class="modal-title">Produk Kami</h3>
+                    <p class="modal-detail">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad optio mollitia
+                        illum culpa deleniti cum nobis? Accusamus quis labore dolores.</p>
+                    <p class="modal-price">IDR 20K</p>
+                    <a class="shopping-cart-modal"><i data-feather="shopping-cart"></i><span>add to cart</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal box item detail end -->
+
     <!-- Feather Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script>
         feather.replace()
     </script>
